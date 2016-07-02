@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+
+require 'chatrix'
+require 'chatrix/bot'
+
+require 'pp'
+
+options = {
+  config: 'config.yaml'
+}
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: chatrix-bot [options]'
+
+  opts.on(
+    '-g',
+    '--generate-config [FILE]',
+    "Generate config to specified file and exit, defaults to 'config.yaml'"
+  ) do |file|
+    Chatrix::Bot::Config.make_template.save file || 'config.yaml'
+    exit
+  end
+
+  opts.on('-c', '--config FILE', 'Specify the config file to use') do |c|
+    options[:config] = c
+  end
+
+  opts.on_tail('-v', '--version', 'Print version and exit') do
+    puts "chatrix-bot v#{Chatrix::Bot::VERSION}, chatrix v#{Chatrix::VERSION}"
+    exit
+  end
+
+  opts.on_tail('-h', '--help', 'Shows this help message and exits') do
+    puts opts
+    exit
+  end
+end.parse!
+
+pp options
