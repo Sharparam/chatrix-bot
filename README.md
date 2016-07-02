@@ -1,10 +1,22 @@
-# Chatrix::Bot
+# chatrix-bot
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/chatrix/bot`. To experiment with that code, run `bin/console` for an interactive prompt.
+A bot for [Matrix][matrix], written in Ruby with plugin support.
 
-TODO: Delete this and the text above, and describe your gem
+## License
+
+Copyright (c) 2016 by [Adam Hellberg][sharparam].
+
+The project is available as open source under
+the terms of the [MIT License][license].
 
 ## Installation
+
+### As a system application
+
+Install the project as a gem on your system by running `gem install chatrix-bot`
+and then refer to the [Usage](#usage) section in this document.
+
+### In another Ruby project
 
 Add this line to your application's Gemfile:
 
@@ -22,20 +34,29 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Run the `chatrix-bot` executable in the `exe` directory to start the bot
+with default options (loading config from `config.yaml`). To generate a new
+config, pass the `-g` option with optional path to the config file to generate.
+
+To specify a config file to use when running the bot, pass the `-c` option
+with the path to the config file to use.
+
+The bot can also be used from within other Ruby scripts by requiring
+`chatrix/bot` and creating a new instance of `Chatrix::Bot`.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies.
+Then, run `rake spec` to run the tests. You can also run `bin/console`
+for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/chatrix-bot.
+Bug reports and pull requests are welcome on [GitHub][issues].
 
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+[matrix]: http://matrix.org
+[issues]: https://github.com/Sharparam/chatrix-bot/issues
+[sharparam]: https://github.com/Sharparam
+[license]: http://opensource.org/licenses/MIT
