@@ -24,7 +24,11 @@ OptionParser.new do |opts|
     exit
   end
 
-  opts.on('-c', '--config FILE', 'Specify the config file to use') do |c|
+  opts.on(
+    '-c',
+    '--config FILE',
+    "Specify the config file to use (uses 'config.yaml' if not specified)"
+  ) do |c|
     options[:config] = c
   end
 
