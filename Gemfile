@@ -13,7 +13,7 @@ group :development do
   gem 'guard-rspec', '~> 4.7', require: false
   gem 'guard-rubocop', '~> 1.2'
 
-  gem 'chatrix', github: 'Sharparam/chatrix', branch: 'develop'
+  # gem 'chatrix', github: 'Sharparam/chatrix', branch: 'develop'
 end
 
 group :test do
