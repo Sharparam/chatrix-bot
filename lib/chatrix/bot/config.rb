@@ -17,8 +17,8 @@ module Chatrix
       attr_reader :file
 
       def initialize(file = DEFAULT_CONFIG_PATH, data = nil)
-        @file = file
-        @dir = File.dirname File.expand_path @file
+        @file = File.expand_path file
+        @dir = File.dirname @file
         @data = data || {}
 
         FileUtils.mkpath @dir unless File.exist? @dir
@@ -33,7 +33,7 @@ module Chatrix
       end
 
       def self.load(file)
-        YAML.load_file(file)
+        YAML.load_file File.expand_path(file)
       end
 
       def self.defaults

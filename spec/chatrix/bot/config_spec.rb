@@ -46,8 +46,10 @@ describe Chatrix::Bot::Config do
       )
     end
 
+    let(:target) { File.expand_path 'config.yaml' }
+
     it 'should load from file properly' do
-      expect(YAML).to receive(:load_file).with('config.yaml').and_return data
+      expect(YAML).to receive(:load_file).with(target).and_return data
       config = Chatrix::Bot::Config.load 'config.yaml'
       expect(config.file).to eql 'test_file'
       expect(config[:str_key]).to eql 'a string value'
@@ -55,10 +57,12 @@ describe Chatrix::Bot::Config do
   end
 
   describe '#save' do
+    let(:target) { "#{Dir.pwd}/my_file.yaml" }
+
     let(:content) do
       <<~EOF
       --- !ruby/object:Chatrix::Bot::Config
-      file: my_file.yaml
+      file: "#{target}"
       dir: "#{Dir.pwd}"
       data:
         :my_key: my simple string
@@ -68,7 +72,7 @@ describe Chatrix::Bot::Config do
     let(:buffer) { StringIO.new }
 
     it 'should save data to file' do
-      expect(File).to receive(:open).with('my_file.yaml', 'w').and_yield buffer
+      expect(File).to receive(:open).with(target, 'w').and_yield buffer
       Chatrix::Bot::Config.new(
         'my_file.yaml', my_key: 'my simple string'
       ).save
