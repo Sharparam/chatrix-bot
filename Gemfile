@@ -19,7 +19,7 @@ group :test do
   gem 'rspec', '~> 3.0'
 end
 
-group :development do
+group :development, :test do
   gem 'rubocop', '~> 0.41.0'
 end
 
