@@ -19,7 +19,7 @@ module Chatrix
 
     # Initializes a new Bot instance.
     # @param file [String] File to load config from.
-    def initialize(file = 'config.yaml')
+    def initialize(file = Config::DEFAULT_CONFIG_PATH)
       @config = Config.load file
       @log = Logger.new @config[:log_file], 'daily'
       @log.level = @config[:log_level]
