@@ -33,6 +33,10 @@ module Chatrix
         message.match(/^#{PREFIX}([^\s]+)/)[1]
       end
 
+      def self.stylize(name)
+        "#{PREFIX}#{name}" unless command? name
+      end
+
       def self.parse(message)
         return nil unless command? message
 
