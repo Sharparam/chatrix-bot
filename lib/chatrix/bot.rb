@@ -48,6 +48,10 @@ module Chatrix
       @client.stop_syncing
     end
 
+    def on_sync_error(error)
+      log.error "SYNC ERROR: #{error.inspect}"
+    end
+
     private
 
     def init_logger
@@ -70,6 +74,10 @@ module Chatrix
         @config[:user_id],
         homeserver: @config[:homeserver]
       )
+
+      log.debug 'Client event registrations'
+
+      @client.subscribe(self, prefix: :on)
     end
   end
 end
