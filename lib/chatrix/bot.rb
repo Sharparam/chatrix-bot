@@ -5,6 +5,7 @@ require 'logger'
 require 'chatrix/bot/errors'
 require 'chatrix/bot/version'
 require 'chatrix/bot/config'
+require 'chatrix/bot/plugin_manager'
 
 require 'chatrix'
 
@@ -17,6 +18,9 @@ module Chatrix
     # The Logger instance for the bot.
     attr_reader :log
 
+    # The PluginManager for this bot.
+    attr_reader :plugin_manager
+
     # Initializes a new Bot instance.
     # @param file [String] File to load config from.
     def initialize(file = Config::DEFAULT_CONFIG_PATH)
@@ -25,6 +29,9 @@ module Chatrix
       @config = Config.load file
 
       init_logger
+
+      log.debug 'Initializing plugin manager'
+      @plugin_manager = PluginManager.new self
 
       log.debug 'bot finished initializing'
     end
@@ -46,6 +53,13 @@ module Chatrix
     def stop
       log.info 'Bot stopping sync'
       @client.stop_syncing
+    end
+
+    def on_room_message(room, message)
+      # Do not process messages sent before we joined, or if we sent
+      # them ourselves
+      return if message.sender == @client.me || message.timestamp < @started_at
+      plugin_manager.parse_message room, message
     end
 
     def on_sync_error(error)
