@@ -1,6 +1,9 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
+require 'chatrix/bot/command'
+require 'chatrix/bot/pattern'
+
 module Chatrix
   class Bot
     # Base class for bot plugins.
@@ -19,13 +22,19 @@ module Chatrix
       end
 
       class << self
-        @commands = []
+        attr_reader :commands
 
-        # @return [Array] an array of RegEx patterns that the plugin should
-        #   listen to.
-        @patterns = []
+        attr_reader :command_power
 
-        alias register_pattern register_patterns
+        def inherited(subclass)
+          {
+            :@commands => [], :@patterns => [], :@command_power => 0
+          }.each { |var, val| subclass.instance_variable_set(var, val) }
+        end
+
+        def command?(name)
+          !command(name).nil?
+        end
 
         # Gets the command with the specified name (or alias).
         # @param name [String] The name to search for, can also be an alias.
@@ -37,13 +46,10 @@ module Chatrix
         # Attempts to match the given string against all the patterns defined
         # for the plugin.
         # @param text [String] The text to check for matches.
-        # @return [MatchData, nil] The result of the first successful match,
+        # @return [Pattern, nil] The result of the first successful match,
         #   or `nil` if no match was found.
         def match(text)
-          @patterns.each do |pattern|
-            match = pattern.match text
-            return match if match
-          end
+          @patterns.find { |p| p.match? text }
         end
 
         protected
@@ -66,23 +72,24 @@ module Chatrix
           @commands.push Command.new command.to_s.downcase, syntax, help, opts
         end
 
+        # Registers a RegEx pattern that the plugin should listen to
+        # with an optional explicit handler for the match.
+        #
+        # @param pattern [Regexp] The RegEx pattern to add.
+        # @param handler [Symbol, nil] The method to call on the plugin when
+        #   a matching message is detected.
+        def register_pattern(pattern, handler = nil)
+          @patterns.push Pattern.new pattern, handler
+        end
+
         # Adds RegEx patterns to the plugin.
         # @param patterns [Regexp] RegEx patterns to add.
         def register_patterns(*patterns)
-          @patterns.concat patterns
+          patterns.each { |p| @patterns.push Pattern.new p }
         end
 
-        private
-
-        def parse_parameters(syntax, &block)
-          ret = []
-          syntax.scan(/([<\[])([\w\ ]+)[>\]]/) do |match|
-            clean = match[1].gsub(/\s+/, '_')
-            required = match[0] == '<'
-            yield clean, required if block
-            ret.push [clean, required]
-          end
-          ret
+        def command_restriction(level)
+          @command_power = level
         end
       end
     end
