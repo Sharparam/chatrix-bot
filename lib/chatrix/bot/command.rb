@@ -34,7 +34,7 @@ module Chatrix
 
         name = message.match(/^#{PREFIX}([^\s]+)/)[1]
         rest = message.match(/ (.+)$/)
-        body = rest.is_a?(MatchData) ? m[1].to_s : ''
+        body = rest.is_a?(MatchData) ? rest[1].to_s : ''
 
         { name: name, body: body }
       end
