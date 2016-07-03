@@ -19,6 +19,58 @@ module Chatrix
       # @param bot [Chatrix::Bot] The bot instance in control of the plugin.
       def initialize(bot)
         @bot = bot
+        @log = @bot.log
+      end
+
+      # Handles a plugin command.
+      #
+      # @param room [Room] The room the command was sent in.
+      # @param sender [User] The user who issued the command.
+      # @param name [String] The name of the command.
+      # @param body [String] The command body (text after command name).
+      def handle_command(room, sender, name, body)
+        command = self.class.command name
+
+        unless @bot.admin? sender
+          check_command_permissions(room, command, sender)
+        end
+
+        data = command.parse body
+        meth = command.handler || :on_command
+        send(meth, room, sender, command.name, data) if respond_to? meth
+      end
+
+      # Parses a message from a room.
+      # If there are any patterns registred for the plugin that matches the
+      # message body, the relevant handlers on the plugin will be invoked for
+      # the message.
+      #
+      # All messages, regardless of patterns, will be passed to the
+      # `:on_message` method, if it is defined.
+      #
+      # @param room [Room] The room the message was sent in.
+      # @param sender [User] The user who sent the message.
+      # @param message [Message] The message that was sent.
+      def parse_message(room, message)
+        send(:on_message, room, message) if respond_to? :on_message
+        pattern = self.class.match message.body
+        handle_match(room, message, pattern) if pattern
+      rescue => e
+        @log.error "Error while parsing message in #{self.class}: #{e.inspect}"
+      end
+
+      private
+
+      def handle_match(room, message, pattern)
+        meth = pattern.handler || :on_match
+        return unless respond_to? meth
+        send meth, room, message, pattern.match(message.body)
+      end
+
+      def check_command_permissions(room, command, sender)
+        user_power = sender.power_in room
+        raise PermissionError unless user_power >= self.class.command_power
+        command.test
       end
 
       class << self
