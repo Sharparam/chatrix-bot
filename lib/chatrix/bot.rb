@@ -25,6 +25,8 @@ module Chatrix
       @config = Config.load file
 
       init_logger
+
+      log.debug 'bot finished initializing'
     end
 
     def admin?(user)
