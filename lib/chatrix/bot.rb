@@ -27,6 +27,10 @@ module Chatrix
       init_logger
     end
 
+    def admin?(user)
+      @config[:admins].member? user.id
+    end
+
     # Starts the bot (starts syncing with the homeserver).
     def start
       init_client unless @client
