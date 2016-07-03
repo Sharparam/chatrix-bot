@@ -15,12 +15,15 @@ module Chatrix
 
       attr_reader :handler
 
+      attr_reader :required_power
+
       def initialize(name, syntax, help, opts = {})
         @name = name
         @syntax = syntax
         @help = help
         @aliases = opts[:aliases] || []
         @handler = opts[:handler]
+        @required_power = opts[:power] || 0
 
         configure_parameters syntax, opts
       end
@@ -65,6 +68,10 @@ module Chatrix
         end
 
         data
+      end
+
+      def test(user, room)
+        raise PermissionError unless user.power_in(room) >= required_power
       end
 
       private
