@@ -30,11 +30,7 @@ module Chatrix
 
     # Starts the bot (starts syncing with the homeserver).
     def start
-      @client = Chatrix::Client.new(
-        @config[:access_token],
-        @config[:user_id],
-        @config[:homeserver]
-      ) unless @client
+      init_client unless @client
 
       @client.start_syncing
     end
@@ -42,6 +38,18 @@ module Chatrix
     # Stops the bot (stops syncing with the homeserver).
     def stop
       @client.stop_syncing
+    end
+
+    private
+
+    def init_client
+      log.debug 'Client initialization'
+
+      @client = Chatrix::Client.new(
+        @config[:access_token],
+        @config[:user_id],
+        homeserver: @config[:homeserver]
+      )
     end
   end
 end
