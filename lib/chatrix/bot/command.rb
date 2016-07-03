@@ -70,6 +70,14 @@ module Chatrix
         data
       end
 
+      def usage
+        <<~EOF
+        Usage: #{self.class.stylize(name)} #{syntax}
+        #{help}
+        Required power level to use: #{required_power}
+        EOF
+      end
+
       def test(user, room)
         raise PermissionError unless user.power_in(room) >= required_power
       end
