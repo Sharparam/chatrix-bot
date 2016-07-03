@@ -27,6 +27,9 @@ module Chatrix
 
         alias register_pattern register_patterns
 
+        # Gets the command with the specified name (or alias).
+        # @param name [String] The name to search for, can also be an alias.
+        # @return [Command] The command with the specified name or alias.
         def command(name)
           @commands.find { |c| c.name_or_alias?(name) }
         end
@@ -45,9 +48,20 @@ module Chatrix
 
         protected
 
-        # Syntax example: "!ban <user> [reason]"
-        # Usage example:
-        # register_command('ban', '<user> [reason]')
+        # Registers a command that the plugin should respond to.
+        #
+        # @param command [String] The name of the command.
+        # @param syntax [String] Command syntax, this is used to determine
+        #   the parameters accepted by the command. See {Parameter} for more
+        #   information on parameters and {Command} for more information
+        #   regarding the structure of the syntax string.
+        # @param help [String] Help text for the command.
+        # @param opts [Hash] Additional options.
+        #
+        # @option opts [Symbol] :handler Name of the method in the plugin class
+        #   that should handle this command.
+        # @option opts [Array<String>] :aliases A list of aliases that can be
+        #   used to call this command in addition to the main name.
         def register_command(command, syntax, help, opts = {})
           @commands.push Command.new command.to_s.downcase, syntax, help, opts
         end
