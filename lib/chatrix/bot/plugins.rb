@@ -4,7 +4,7 @@
 require 'chatrix/bot/plugin'
 
 module Chatrix
-  module Bot
+  class Bot
     # Contains a number of standard plugins for the bot.
     module Plugins
     end
