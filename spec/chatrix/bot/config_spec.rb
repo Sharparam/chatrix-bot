@@ -36,6 +36,7 @@ describe Chatrix::Bot::Config do
         <<~EOF
         --- !ruby/object:Chatrix::Bot::Config
         file: test_file
+        dir: "#{Dir.pwd}"
         data:
           :str_key: "a string value"
           :arr_key:
@@ -48,7 +49,7 @@ describe Chatrix::Bot::Config do
     it 'should load from file properly' do
       expect(YAML).to receive(:load_file).with('config.yaml').and_return data
       config = Chatrix::Bot::Config.load 'config.yaml'
-      expect(config.file).to eql 'config.yaml'
+      expect(config.file).to eql 'test_file'
       expect(config[:str_key]).to eql 'a string value'
     end
   end
@@ -58,6 +59,7 @@ describe Chatrix::Bot::Config do
       <<~EOF
       --- !ruby/object:Chatrix::Bot::Config
       file: my_file.yaml
+      dir: "#{Dir.pwd}"
       data:
         :my_key: my simple string
       EOF
@@ -68,8 +70,7 @@ describe Chatrix::Bot::Config do
     it 'should save data to file' do
       expect(File).to receive(:open).with('my_file.yaml', 'w').and_yield buffer
       Chatrix::Bot::Config.new(
-        file: 'my_file.yaml',
-        data: { my_key: 'my simple string' }
+        'my_file.yaml', my_key: 'my simple string'
       ).save
       expect(buffer.string).to eql content
     end
