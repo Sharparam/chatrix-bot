@@ -7,6 +7,8 @@ module Chatrix
       # Provides a command to make the bot echo what was passed in as
       # argument to the command.
       class Echo < Plugin
+        command_restriction 50
+
         register_command 'echo', '<text>',
                          'Makes the bot echo the specified text to chat',
                          aliases: ['say'], handler: :say
