@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Chatrix
   class Bot
+    # Describes a parameter in a command.
     class Parameter
       MATCHERS = {
         normal: /[^\s]+/,
