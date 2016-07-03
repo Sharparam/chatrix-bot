@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # frozen_string_literal: true
 
 require 'optparse'
@@ -8,26 +9,32 @@ require 'chatrix/bot'
 
 require 'pp'
 
-options = {
-  config: 'config.yaml'
+defaults = {
+  config: Chatrix::Bot::Config::DEFAULT_CONFIG_PATH
 }
+
+options = {}
 
 OptionParser.new do |opts|
   opts.banner = 'Usage: chatrix-bot [options]'
 
   opts.on(
     '-g',
-    '--generate-config [FILE]',
-    "Generate config to specified file and exit, defaults to 'config.yaml'"
+    '--generate [FILE]',
+    'Generate config to specified file and exit.',
+    "  FILE defaults to '#{defaults[:config]}'"
   ) do |file|
-    Chatrix::Bot::Config.make_template.save file || 'config.yaml'
+    file ||= defaults[:config]
+    data = Chatrix::Bot::Config.defaults
+    Chatrix::Bot::Config.new(file, data).save
     exit
   end
 
   opts.on(
     '-c',
     '--config FILE',
-    "Specify the config file to use (uses 'config.yaml' if not specified)"
+    'Specify the config file to use',
+    "  (uses '#{defaults[:config]}' if not specified)"
   ) do |c|
     options[:config] = c
   end
