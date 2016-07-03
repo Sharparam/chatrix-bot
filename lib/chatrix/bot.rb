@@ -2,6 +2,7 @@
 
 require 'logger'
 
+require 'chatrix/bot/errors'
 require 'chatrix/bot/version'
 require 'chatrix/bot/config'
 
