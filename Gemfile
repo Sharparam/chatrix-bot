@@ -12,6 +12,8 @@ group :development do
   gem 'guard-bundler', '~> 2.1', require: false
   gem 'guard-rspec', '~> 4.7', require: false
   gem 'guard-rubocop', '~> 1.2'
+
+  gem 'chatrix', github: 'Sharparam/chatrix', branch: 'develop'
 end
 
 group :test do
