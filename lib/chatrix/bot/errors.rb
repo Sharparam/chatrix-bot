@@ -5,5 +5,8 @@ module Chatrix
 
     class CommandError < BotError
     end
+
+    class PermissionError < CommandError
+    end
   end
 end
