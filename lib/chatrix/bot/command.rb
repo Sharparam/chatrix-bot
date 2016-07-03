@@ -29,6 +29,10 @@ module Chatrix
         !message.match(/^#{PREFIX}[^\s]/).nil?
       end
 
+      def self.extract_name(message)
+        message.match(/^#{PREFIX}([^\s]+)/)[1]
+      end
+
       def self.parse(message)
         return nil unless command? message
 
