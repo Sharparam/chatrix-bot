@@ -34,6 +34,11 @@ Or install it yourself as:
 
 ## Usage
 
+**NOTE: chatrix-bot is very early in development and probably very unstable.**
+
+This project is not ready for deployment as a stable bot, it's for
+development use only at the moment.
+
 Run the `chatrix-bot` executable in the `exe` directory to start the bot
 with default options (loading config from `config.yaml`). To generate a new
 config, pass the `-g` option with optional path to the config file to generate.
