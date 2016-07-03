@@ -23,9 +23,8 @@ module Chatrix
       @started_at = (Time.now.to_f * 1e3).round
 
       @config = Config.load file
-      @log = Logger.new @config[:log_file], 'daily'
-      @log.level = @config[:log_level]
-      @log.progname = 'chatrix-bot'
+
+      init_logger
     end
 
     # Starts the bot (starts syncing with the homeserver).
@@ -41,6 +40,18 @@ module Chatrix
     end
 
     private
+
+    def init_logger
+      if @config[:debug]
+        @log = Logger.new $stdout
+        @log.level = Logger::DEBUG
+      else
+        @log = Logger.new @config[:log_file], 'daily'
+        @log.level = @config[:log_level]
+      end
+
+      @log.progname = 'chatrix-bot'
+    end
 
     def init_client
       log.debug 'Client initialization'
