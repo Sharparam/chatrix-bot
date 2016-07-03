@@ -4,6 +4,7 @@ require 'chatrix/bot/parameter'
 
 module Chatrix
   class Bot
+    # Describes a plugin command.
     class Command
       PREFIX = '!'
 
