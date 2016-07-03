@@ -11,8 +11,22 @@ module Chatrix
                          'Makes the bot echo the specified text to chat',
                          aliases: ['say'], handler: :say
 
-        def say(room, sender, command, args)
-          @bot.send_message room, args[:text]
+        register_command 'act', '<text>',
+                         'Makes the bot perform an emote',
+                         aliases: %w(em emote), handler: :emote
+
+        register_command 'notice', '<text>', 'Sends a notice', handler: :notice
+
+        def say(room, _sender, _command, args)
+          room.messaging.send_message args[:text]
+        end
+
+        def emote(room, _sender, _command, args)
+          room.messaging.send_emote args[:text]
+        end
+
+        def notice(room, _sender, _command, args)
+          room.messaging.send_notice args[:text]
         end
       end
     end
