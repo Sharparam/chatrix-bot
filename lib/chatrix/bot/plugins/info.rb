@@ -5,6 +5,8 @@ module Chatrix
     module Plugins
       # Plugin to query various information about the bot.
       class Info < Plugin
+        TIME_MULTS = [24, 60, 60, 1].freeze
+
         register_command 'info', nil, 'Provides info about the bot',
                          handler: :info
 
@@ -30,11 +32,22 @@ module Chatrix
         private
 
         def pretty_duration(seconds)
-          days = seconds / 60**2 / 24
-          hours = seconds / 60**2 - days * 24
-          minutes = seconds / 60 - hours * 60 - days * 24 * 60
-          seconds -= minutes * 60 + hours * 60**2 + days * 24 * 60**2
-          '%02d:%02d:%02d:%02d' % [days, hours, minutes, seconds]
+          values = get_values(seconds)
+          format '%03d' + ':%02d' * (values.size - 1), *values
+        end
+
+        def get_values(remain, index = 0, acc = [])
+          return acc if index == brackets.count
+
+          mult = time_mult index
+
+          acc.push remain / mult
+
+          get_values remain - acc.last * mult, index + 1, acc
+        end
+
+        def time_mult(index)
+          TIME_MULTS[index..-1].reduce { |a, e| a * e }
         end
       end
     end
