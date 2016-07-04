@@ -73,9 +73,10 @@ module Chatrix
 
       def usage
         <<~EOF
-        Usage: #{self.class.stylize(name)} #{syntax}
+        Usage: #{self.class.stylize(name)} #{syntax || ''}
         #{help}
         Required power level to use: #{required_power}
+        Aliases: #{@aliases.join ', '}
         EOF
       end
 
