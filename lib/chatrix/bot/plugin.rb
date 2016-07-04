@@ -121,6 +121,8 @@ module Chatrix
         #   that should handle this command.
         # @option opts [Array<String>] :aliases A list of aliases that can be
         #   used to call this command in addition to the main name.
+        #
+        # @return [void]
         def register_command(command, syntax, help, opts = {})
           @commands.push Command.new command.to_s.downcase, syntax, help, opts
         end
