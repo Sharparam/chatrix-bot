@@ -33,6 +33,7 @@ module Chatrix
           (@messages[room.id] ||= {})[message.sender] = message.body
         end
 
+        # rubocop:disable Metrics/AbcSize
         def fix(room, message, match)
           old = last_message(room, message.sender)
 
@@ -45,6 +46,7 @@ module Chatrix
 
           @messages[room.id][message.sender] = fixed
         end
+        # rubocop:enable Metrics/AbcSize
 
         def fix_other(room, message, match)
           name = match[1]
