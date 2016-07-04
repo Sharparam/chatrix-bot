@@ -14,4 +14,5 @@ end
 require 'chatrix/bot/plugins/help'
 require 'chatrix/bot/plugins/info'
 require 'chatrix/bot/plugins/echo'
+require 'chatrix/bot/plugins/note'
 require 'chatrix/bot/plugins/hug'
