@@ -12,14 +12,14 @@ module Chatrix
                          ' of topics.',
                          handler: :quote, aliases: ['q']
 
-        register_pattern /^~(\w+)\s*(.+)?$/, :tilde
+        register_pattern(/^~(\w+)\s*(.+)?$/, :tilde)
 
         def initialize(bot)
           super
           @db = (@config[:db] ||= {})
         end
 
-        def quote(room, sender, _command, args)
+        def quote(room, _sender, _command, args)
           return list_topics(room) if args[:topic].nil?
           topic = args[:topic].downcase
           quote = args[:quote]
