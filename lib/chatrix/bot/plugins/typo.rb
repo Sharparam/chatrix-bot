@@ -3,6 +3,14 @@
 module Chatrix
   class Bot
     module Plugins
+      # Plugin to correct spelling mistakes with regex.
+      #
+      # Users can send messages in the form of s/find/replace/[flags] which
+      # will perform a regex find & replace on their last message.
+      #
+      # The replacements can be further changed as long as a regular message
+      # isn't changed in between. This way, users can keep editing on the new
+      # replacement.
       class Typo < Plugin
         PATTERN = %r{^\s*s/((?:\\/|[^/])+)/((?:\\/|[^/])*)/([img]*)\s*$}
 
