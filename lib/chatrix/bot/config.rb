@@ -56,7 +56,9 @@ module Chatrix
       end
 
       def get_pluginconfig(type)
-        new File.join(dir, 'plugins', "#{type.to_s.downcase}.yaml")
+        path = type.to_s.downcase.gsub(/::/, '/')
+        file = "#{path.match(/\w+$/).to_s}.yaml"
+        self.class.new File.join(dir, 'plugins', path, file)
       end
     end
   end
