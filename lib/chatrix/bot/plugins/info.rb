@@ -37,7 +37,7 @@ module Chatrix
         end
 
         def get_values(remain, index = 0, acc = [])
-          return acc if index == brackets.count
+          return acc if index == TIME_MULTS.count
 
           mult = time_mult index
 
