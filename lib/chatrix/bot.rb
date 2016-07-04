@@ -26,7 +26,7 @@ module Chatrix
     def initialize(file = Config::DEFAULT_CONFIG_PATH)
       @started_at = (Time.now.to_f * 1e3).round
 
-      @config = Config.load file
+      @config = Config.new file
 
       init_logger
 
