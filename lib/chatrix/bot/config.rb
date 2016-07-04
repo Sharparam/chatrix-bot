@@ -25,6 +25,8 @@ module Chatrix
 
       attr_reader :file
 
+      attr_reader :dir
+
       def initialize(file = DEFAULT_CONFIG_PATH, data = nil)
         @file = File.expand_path file
         @dir = File.dirname @file
@@ -51,6 +53,10 @@ module Chatrix
 
       def save(file = @file)
         File.open(file, 'w') { |f| f.write @data.to_yaml }
+      end
+
+      def get_pluginconfig(type)
+        new File.join(dir, 'plugins', "#{type.to_s.downcase}.yaml")
       end
     end
   end

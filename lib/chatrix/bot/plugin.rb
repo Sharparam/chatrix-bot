@@ -20,6 +20,7 @@ module Chatrix
       def initialize(bot)
         @bot = bot
         @log = @bot.log
+        @config = @bot.config.get_pluginconfig self.class
       end
 
       # Handles a plugin command.
