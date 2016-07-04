@@ -6,8 +6,8 @@ module Chatrix
       # Allows users to keep a personal note.
       class Note < Plugin
         register_command 'note', '[content]',
-                         'Set a new personal note, or clear an existing one ' +
-                         'if the note content is "clear". Use without an ' +
+                         'Set a new personal note, or clear an existing one ' \
+                         'if the note content is "clear". Use without an ' \
                          'argument to see your current note.',
                          handler: :note
 
