@@ -34,14 +34,11 @@ describe Chatrix::Bot::Config do
     let(:data) do
       YAML.load(
         <<~EOF
-        --- !ruby/object:Chatrix::Bot::Config
-        file: test_file
-        dir: "#{Dir.pwd}"
-        data:
-          :str_key: "a string value"
-          :arr_key:
-          - foo
-          - bar
+        ---
+        :str_key: "a string value"
+        :arr_key:
+        - foo
+        - bar
         EOF
       )
     end
@@ -49,23 +46,23 @@ describe Chatrix::Bot::Config do
     let(:target) { File.expand_path 'config.yaml' }
 
     it 'should load from file properly' do
+      dir = File.dirname target
+      expect(File).to receive(:exist?).with(dir).and_return true
+      expect(File).to receive(:exist?).with(target).and_return true
       expect(YAML).to receive(:load_file).with(target).and_return data
-      config = Chatrix::Bot::Config.load 'config.yaml'
-      expect(config.file).to eql 'test_file'
+      config = Chatrix::Bot::Config.new 'config.yaml'
+      expect(config.file).to eql target
       expect(config[:str_key]).to eql 'a string value'
     end
   end
 
   describe '#save' do
-    let(:target) { "#{Dir.pwd}/my_file.yaml" }
+    let(:target) { File.expand_path 'my_file.yaml' }
 
     let(:content) do
       <<~EOF
-      --- !ruby/object:Chatrix::Bot::Config
-      file: "#{target}"
-      dir: "#{Dir.pwd}"
-      data:
-        :my_key: my simple string
+      ---
+      :my_key: my simple string
       EOF
     end
 

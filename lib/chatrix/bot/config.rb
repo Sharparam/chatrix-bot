@@ -28,9 +28,12 @@ module Chatrix
       def initialize(file = DEFAULT_CONFIG_PATH, data = nil)
         @file = File.expand_path file
         @dir = File.dirname @file
-        @data = data || {}
 
         FileUtils.mkpath @dir unless File.exist? @dir
+
+        load_data = File.exist?(@file) && data.nil?
+
+        @data = load_data ? YAML.load_file(@file) : (data || {})
       end
 
       def [](key)
@@ -41,17 +44,13 @@ module Chatrix
         @data[key] = value
       end
 
-      def self.load(file)
-        YAML.load_file File.expand_path(file)
-      end
-
       def get(key, default)
         self[key] = default if self[key].nil?
         self[key]
       end
 
       def save(file = @file)
-        File.open(file, 'w') { |f| f.write to_yaml }
+        File.open(file, 'w') { |f| f.write @data.to_yaml }
       end
     end
   end
