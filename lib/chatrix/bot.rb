@@ -40,6 +40,10 @@ module Chatrix
       @config[:admins].member? user.id
     end
 
+    def uptime
+      Time.now.to_i - @started_at / 1000
+    end
+
     # Starts the bot (starts syncing with the homeserver).
     def start
       init_client unless @client
