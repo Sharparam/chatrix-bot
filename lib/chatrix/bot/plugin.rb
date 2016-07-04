@@ -71,7 +71,7 @@ module Chatrix
       def check_command_permissions(room, command, sender)
         user_power = sender.power_in room
         raise PermissionError unless user_power >= self.class.command_power
-        command.test
+        command.test sender, room
       end
 
       class << self
