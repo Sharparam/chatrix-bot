@@ -6,10 +6,10 @@ module Chatrix
       class Typo < Plugin
         PATTERN = %r{^\s*s/((?:\\/|[^/])+)/((?:\\/|[^/])*)/([img]*)\s*$}
 
-        PATTERN_OTHER = %r{
+        PATTERN_OTHER = /
           ^\s*([\w@:\.]+)\s*: # The username to correct
           #{PATTERN.source[1..-1]} # PATTERN without the first char
-        }x
+        /x
 
         register_pattern PATTERN, :fix
 
