@@ -25,7 +25,7 @@ OptionParser.new do |opts|
     "  FILE defaults to '#{defaults[:config]}'"
   ) do |file|
     file ||= defaults[:config]
-    data = Chatrix::Bot::Config.defaults
+    data = Chatrix::Bot::Config::DEFAULTS
     Chatrix::Bot::Config.new(file, data).save
     exit
   end

@@ -14,6 +14,15 @@ module Chatrix
     class Config
       DEFAULT_CONFIG_PATH = '~/.config/chatrix-bot/config.yaml'
 
+      DEFAULTS = {
+        access_token: '<ACCESS TOKEN>',
+        user_id: '<MY USER ID>',
+        admins: ['GLOBAL ADMINS', '@user:example.com'],
+        homeserver: 'https://server.example.com:1234',
+        log_file: 'chatrix-bot.log',
+        log_level: Logger::INFO
+      }.freeze
+
       attr_reader :file
 
       def initialize(file = DEFAULT_CONFIG_PATH, data = nil)
@@ -34,17 +43,6 @@ module Chatrix
 
       def self.load(file)
         YAML.load_file File.expand_path(file)
-      end
-
-      def self.defaults
-        {
-          access_token: '<ACCESS TOKEN>',
-          user_id: '<MY USER ID>',
-          admins: ['GLOBAL ADMINS', '@user:example.com'],
-          homeserver: 'https://server.example.com:1234',
-          log_file: 'chatrix-bot.log',
-          log_level: Logger::INFO
-        }
       end
 
       def get(key, default)
