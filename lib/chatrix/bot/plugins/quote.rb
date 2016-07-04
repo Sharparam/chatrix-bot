@@ -3,6 +3,8 @@
 module Chatrix
   class Bot
     module Plugins
+      # Lets users add quotes on a topic and retrieve a random quote from
+      # a given topic.
       class Quote < Plugin
         register_command 'quote', '[topic] [quote]',
                          'Get a quote from a topic, or add quotes to a topic.' \
