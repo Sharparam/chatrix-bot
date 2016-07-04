@@ -14,7 +14,7 @@ module Chatrix
 
         def initialize(bot)
           super
-          @info = "I am chatrix-bot v#{Chatrix::Bot::VERSION}, " +
+          @info = "I am chatrix-bot v#{Chatrix::Bot::VERSION}, " \
                   "using chatrix v#{Chatrix::VERSION}."
         end
 
