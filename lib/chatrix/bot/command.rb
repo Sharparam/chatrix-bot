@@ -21,7 +21,7 @@ module Chatrix
       def initialize(name, syntax, help, opts = {})
         @name = name
         @syntax = syntax
-        @help = help
+        @help = help || 'No special help available for this command.'
         @aliases = opts[:aliases] || []
         @handler = opts[:handler]
         @required_power = opts[:power] || 0
@@ -87,6 +87,7 @@ module Chatrix
 
       def configure_parameters(syntax, options = {})
         @parameters = []
+        return if syntax.nil? || syntax.empty?
         syntax.scan(/([<\[])([\w\ ]+)[>\]]/) do |match|
           param = match[1].gsub(/\s+/, '_').to_sym
           required = match[0] == '<'
