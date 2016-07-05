@@ -12,7 +12,7 @@ module Chatrix
                          ' of topics.',
                          handler: :quote, aliases: ['q']
 
-        register_pattern(/^~(\w+)\s*(.+)?$/, :tilde)
+        register_pattern(/^~([^\s]+)\s*(.+)?$/, :tilde)
 
         def initialize(bot)
           super
