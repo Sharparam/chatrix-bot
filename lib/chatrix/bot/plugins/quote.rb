@@ -56,7 +56,7 @@ module Chatrix
         def random_quote(room, topic)
           quote = @db[topic].sample if @db[topic]
           quote ||= "I have nothing to say about #{topic}..."
-          room.messaging.send_message quote
+          room.messaging.send_html Chatrix::Bot::Markdown.render(quote), quote
         end
 
         def add_quote(room, topic, quote)

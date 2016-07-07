@@ -5,6 +5,7 @@ require 'logger'
 require 'chatrix/bot/errors'
 require 'chatrix/bot/version'
 require 'chatrix/bot/config'
+require 'chatrix/bot/markdown'
 require 'chatrix/bot/plugin_manager'
 
 require 'chatrix'
