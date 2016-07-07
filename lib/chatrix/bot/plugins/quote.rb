@@ -12,11 +12,15 @@ module Chatrix
                          ' of topics.',
                          handler: :quote, aliases: ['q']
 
+        register_command 'qprotect', '<topic>',
+                         'Toggles protection for a topic', handler: :protect
+
         register_pattern(/\A~([^\s]+)\s*(.+)?\z/m, :tilde)
 
         def initialize(bot)
           super
           @db = (@config[:db] ||= {})
+          @protected = (@config[:protected] ||= [])
         end
 
         def quote(room, _sender, _command, args)
@@ -25,6 +29,15 @@ module Chatrix
           quote = args[:quote]
           return random_quote(room, topic) if quote.nil?
           add_quote(room, topic, quote)
+        end
+
+        def protect(room, sender, _command, args)
+          raise PermissionError unless @bot.admin? sender
+          topic = args[:topic]
+          @protected.send(@protected.member?(topic) ? :delete : :push, topic)
+          kind = @protected.member?(topic) ? 'protected' : 'unprotected'
+          room.messaging.send_notice "#{topic} #{kind}!"
+          @config.save
         end
 
         def tilde(room, message, match)
@@ -49,6 +62,7 @@ module Chatrix
         def add_quote(room, topic, quote)
           quote.strip!
           return if quote.empty? || (@db[topic] ||= []).member?(quote)
+          return notify_protected(room, topic) if @protected.member? topic
           @db[topic].push quote
           room.messaging.send_notice 'Quote added!'
           @config.save
@@ -56,6 +70,11 @@ module Chatrix
 
         def top_topics(amount)
           @db.keys.sort { |a, b| @db[b].size - @db[a].size }.first amount
+        end
+
+        def notify_protected(room, topic)
+          room.messaging.send_notice "Unable to add to #{topic}, topic has " \
+                                     'been made protected.'
         end
       end
     end
