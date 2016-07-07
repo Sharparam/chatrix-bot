@@ -7,7 +7,7 @@ module Chatrix
       MATCHERS = {
         normal: /[^\s]+/,
         quoted: /"(?:\\"|[^"])*?"/,
-        rest: /.+$/
+        rest: /.+\z/m
       }.freeze
 
       attr_reader :name
