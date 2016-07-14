@@ -9,6 +9,13 @@ module Chatrix
 
         register_pattern(/\A([@\w:\.]+)(\+\+|--)\z/, :karma)
 
+        def initialize(bot)
+          super
+
+          @config[:db] ||= {}
+          @config.save
+        end
+
         def karma(room, message, match)
           user = match[1].downcase
           update user, CHANGES[match[2]]
@@ -16,11 +23,11 @@ module Chatrix
         end
 
         def [](user)
-          @config[user] ||= 0
+          @config[:db][user] ||= 0
         end
 
         def []=(user, value)
-          @config[user] = value
+          @config[:db][user] = value
           @config.save
         end
 
