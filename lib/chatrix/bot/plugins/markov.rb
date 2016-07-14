@@ -44,7 +44,7 @@ module Chatrix
         private
 
         def process(text)
-          text.split(/[\.!?]/).each do |sentence|
+          text.gsub("\n", ' ').split(/[\.!?]/).each do |sentence|
             train(sentence.strip)
           end
         end
