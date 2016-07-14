@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 require 'httparty'
 require 'filesize'
@@ -19,7 +21,7 @@ module Chatrix
           @cache = {}
         end
 
-        def url(room, message, match)
+        def url(room, message, _match)
           URI.extract(message.body).each do |uri|
             handle_uri room, URI.parse(uri)
           end
@@ -28,22 +30,15 @@ module Chatrix
         private
 
         def handle_uri(room, uri)
-          @log.debug "Attempting to handle #{uri}"
+          return unless %w(http https).member? uri.scheme
 
-          return unless ['http', 'https'].member? uri.scheme
-
+          # Don't notify the room of errors, but do log them internally.
           begin
-            @log.debug "Getting analysis result"
-            result = format_info(uri, uri.host)
-            @log.debug "Sending result to room"
-            room.messaging.send_message result
+            room.messaging.send_message format_info(uri, uri.host)
           rescue SocketError
-            # Log the error but do not notify the chat, needless clutter
             @log.warn "URI invalid or not found: #{uri}"
           rescue => e
             @log.error "Error getting info for #{uri}: #{e.inspect}"
-            room.messaging.send_message 'Failed to retrieve info for URL.' \
-                                        " Error: #{e.inspect}"
           end
         end
 
@@ -71,12 +66,12 @@ module Chatrix
           }
         end
 
-        def analyze_page(uri, response)
+        def analyze_page(uri, _response)
           @log.debug "Analyzing page: #{uri}"
 
           get = HTTParty.get uri
 
-          doc = Nokogiri::HTML(get.body) { |config| config.nonet }
+          doc = Nokogiri::HTML(get.body, &:nonet)
 
           title = doc.css('title').text
 

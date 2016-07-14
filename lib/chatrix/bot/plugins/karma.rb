@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Chatrix
   class Bot
     module Plugins
+      # Lets users give or take karma from others (or just any term).
       class Karma < Plugin
-        CHANGES = { '++' => 1, '--' => -1 }
+        CHANGES = { '++' => 1, '--' => -1 }.freeze
 
         register_pattern(/\A([@\w:\.]+)(\+\+|--)\z/, :karma)
 

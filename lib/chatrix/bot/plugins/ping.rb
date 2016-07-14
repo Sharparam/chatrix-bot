@@ -3,6 +3,7 @@
 module Chatrix
   class Bot
     module Plugins
+      # Responds to !ping command with a "Pong!" message.
       class Ping < Plugin
         register_command 'ping', '', 'Pings the bot', handler: :ping
 
