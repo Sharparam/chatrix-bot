@@ -26,7 +26,7 @@ module Chatrix
 
           user = match[1].downcase
 
-          return if modifying_self? message.sender, user
+          return unless can_modify? message.sender, user
 
           update user, CHANGES[match[2]]
           room.messaging.send_message "#{user}'s karma is #{self[user]}."
@@ -56,6 +56,10 @@ module Chatrix
 
         def given(user)
           @history[user.id] = Time.now
+        end
+
+        def can_modify?(sender, target)
+          @config[:allow_self] || !modifying_self(sender, target)
         end
 
         def modifying_self?(sender, target)
