@@ -43,6 +43,7 @@ module Chatrix
 
         def get_info(query)
           response = HTTParty.get ENDPOINT, make_opts(query)
+          @log.debug "Response from YT: #{response}"
           return nil unless response['items'] && !response['items'].empty?
           item = response['items'].first
           "#{item['snippet']['title']} - #{url(item['id']['videoId'])}"
