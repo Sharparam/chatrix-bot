@@ -11,7 +11,7 @@ module Chatrix
 
         register_command 'youtube', '<query>', 'Searches YouTube for the ' \
                          'specififed query and returns the top result.',
-                         handler: :search
+                         handler: :search, aliases: ['yt']
 
         def initialize(bot)
           super
