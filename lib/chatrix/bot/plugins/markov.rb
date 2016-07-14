@@ -25,20 +25,20 @@ module Chatrix
         end
 
         def on_message(room, message)
-          process message.body
+          process message.body.downcase
           @counter += 1
 
           return unless can_reply? message
 
           # If the return from #reply is non-nil, it means a reply was
           # sent, and we should reset the counters.
-          return if reply(room, message.body).nil?
+          return if reply(room, message.body.downcase).nil?
           @last = Time.now
           @counter = 0
         end
 
         def force(room, _sender, _command, args)
-          reply(room, "#{args[:word1]} #{args[:word2]}")
+          reply(room, "#{args[:word1].downcase} #{args[:word2].downcase}")
         end
 
         private
