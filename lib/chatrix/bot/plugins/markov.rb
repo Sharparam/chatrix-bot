@@ -60,7 +60,7 @@ module Chatrix
         end
 
         def extract_words(sentence)
-          sentence.split(' ').map { |w| w.strip.chomp(',') }
+          sentence.split(' ').map { |w| w.strip }
         end
 
         def add(pair, word)
