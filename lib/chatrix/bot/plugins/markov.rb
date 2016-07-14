@@ -19,7 +19,6 @@ module Chatrix
           @config[:threshold] ||= 30
 
           @db = @config[:db]
-          @db.default = {}
 
           @last = Time.now
           @counter = 0
@@ -65,9 +64,9 @@ module Chatrix
         end
 
         def add(pair, word)
-          entry = @db[pair]
-          entry[word] = { count: 0 } unless entry[word]
-          entry[word][:count] += 1
+          @db[pair] = {} unless @db[pair]
+          @db[pair][word] = { count: 0 } unless @db[pair][word]
+          @db[pair][word][:count] += 1
           @config.save
         end
 
