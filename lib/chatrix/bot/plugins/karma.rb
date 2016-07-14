@@ -50,7 +50,7 @@ module Chatrix
         end
 
         def can_give?(user)
-          return true unless @config[:history][user.id]
+          return true unless @history[user.id]
           (Time.now - @history[user.id]) < @config[:delay]
         end
 
