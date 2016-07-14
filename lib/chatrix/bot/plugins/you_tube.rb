@@ -52,12 +52,8 @@ module Chatrix
           {
             query: {
               q: query,
-              part: 'snippet',
-              maxResults: 1,
-              order: 'relevance',
-              safeSearch: 'none',
-              type: 'video',
-              key: @config[:api_key]
+              part: 'snippet', maxResults: 1, order: 'relevance',
+              safeSearch: 'none', type: 'video', key: @config[:api_key]
             }
           }
         end
