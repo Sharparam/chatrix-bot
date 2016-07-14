@@ -7,7 +7,7 @@ module Chatrix
         register_pattern(/\A([@\w:\.]+)(\+\+|--)\z/, :karma)
 
         def karma(room, message, match)
-          user = match[1]
+          user = match[1].downcase
           update_karma user, CHANGES[match[2]]
           room.messaging.send_message "#{user}'s karma is #{self[user]}."
         end
