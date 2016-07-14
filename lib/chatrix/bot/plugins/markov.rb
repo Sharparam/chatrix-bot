@@ -69,6 +69,7 @@ module Chatrix
         end
 
         def next_word(pair)
+          return nil unless @db[pair]
           sum = @db[pair].values.reduce(0) { |a, e| a + e.count }
           return nil if sum < 1
           rng = rand 1..sum
