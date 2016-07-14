@@ -50,6 +50,7 @@ module Chatrix
         end
 
         def train(sentence)
+          return if sentence.empty?
           words = extract_words sentence
           return if words.size < 3
           (words.size - 2).times do |i|
