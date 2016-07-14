@@ -48,7 +48,7 @@ module Chatrix
 
         def process(text)
           text.split(/[\.!?]/).each do |sentence|
-            train(sentence.trim)
+            train(sentence.strip)
           end
         end
 
