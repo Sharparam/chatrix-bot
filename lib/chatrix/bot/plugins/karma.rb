@@ -59,7 +59,7 @@ module Chatrix
         end
 
         def can_modify?(sender, target)
-          @config[:allow_self] || !modifying_self(sender, target)
+          @config[:allow_self] || !modifying_self?(sender, target)
         end
 
         def modifying_self?(sender, target)
