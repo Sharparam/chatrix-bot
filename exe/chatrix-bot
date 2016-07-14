@@ -3,6 +3,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'daemons'
 
 require 'chatrix'
 require 'chatrix/bot'
@@ -15,7 +16,7 @@ defaults = {
 
 options = {}
 
-OptionParser.new do |opts|
+opt_parser = OptionParser.new do |opts|
   opts.banner = 'Usage: chatrix-bot [options]'
 
   opts.on(
@@ -48,6 +49,17 @@ OptionParser.new do |opts|
     puts opts
     exit
   end
-end.parse!
+end
 
-pp options
+args = ARGV.member?('--') ? ARGV[(ARGV.index('--') + 1) .. -1] : ARGV
+
+opt_parser.parse!(args)
+
+Daemons.run_proc('chatrix-bot.rb') do
+  bot = Chatrix::Bot.new options[:config]
+  bot.start
+  bot.on(:disconnected) do
+    abort "Bot disconnected unexpectedly"
+  end
+  loop { sleep(5) }
+end

@@ -2,6 +2,8 @@
 
 require 'logger'
 
+require 'wisper'
+
 require 'chatrix/bot/errors'
 require 'chatrix/bot/version'
 require 'chatrix/bot/config'
@@ -13,6 +15,8 @@ require 'chatrix'
 module Chatrix
   # The Chatrix bot class.
   class Bot
+    include Wisper::Publisher
+
     # Config object containing the bot config.
     attr_reader :config
 
@@ -69,6 +73,15 @@ module Chatrix
 
     def on_sync_error(error)
       log.error "SYNC ERROR: #{error.inspect}"
+    end
+
+    def on_stop_error(error)
+      log.error "Chatrix failed to stop cleanly: #{error.inspect}"
+    end
+
+    def on_disconnected
+      log.error 'Lost connection with server'
+      broadcast(:disconnected)
     end
 
     private
