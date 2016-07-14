@@ -8,7 +8,7 @@ module Chatrix
 
         def karma(room, message, match)
           user = match[1].downcase
-          update_karma user, CHANGES[match[2]]
+          update user, CHANGES[match[2]]
           room.messaging.send_message "#{user}'s karma is #{self[user]}."
         end
 
@@ -23,7 +23,7 @@ module Chatrix
 
         private
 
-        def update_karma(user, change)
+        def update(user, change)
           self[user] += change
         end
       end
