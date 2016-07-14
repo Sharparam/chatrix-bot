@@ -71,7 +71,8 @@ module Chatrix
           I'm sorry, #{sender}, I cannot let you do that.
         EOF
       rescue => e
-        @log.error "Error parsing #{data[:name]} command in #{room}"
+        @log.error "Error parsing #{data[:name]} command in #{room}" \
+                   ": #{e.inspect}"
         room.messaging.send_notice "Command error: #{e.class}:#{e.message}"
       end
 

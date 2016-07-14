@@ -38,9 +38,7 @@ module Chatrix
         end
 
         def force(room, _sender, _command, args)
-          count = args[:sentence].split(' ').size
-          raise CommandError, 'Not enough words!' unless count > 1
-          reply(room, args[:sentence])
+          reply(room, "#{args[:word1]} #{args[:word2]}")
         end
 
         private
