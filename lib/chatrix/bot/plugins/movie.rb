@@ -7,7 +7,7 @@ module Chatrix
     module Plugins
       # Lets users look up information for a movie by its name.
       class Movie < Plugin
-        ENDPOINT = 'https://www.omdbapi.com'.freeze
+        ENDPOINT = 'https://www.omdbapi.com'
 
         IMDB_TEMPLATE = 'http://www.imdb.com/title/'
 
@@ -17,8 +17,7 @@ module Chatrix
                          ' with the specified title, to get a movie from a' \
                          ' specific year (if there are multiple movies with' \
                          ' the same names), put the year in parentheses after' \
-                         ' the title.', handler: :movie,
-                         aliases: ['imdb', 'omdb']
+                         ' the title.', handler: :movie, aliases: %w(imdb omdb)
 
         def movie(room, _sender, _command, args)
           match = args[:title].match EXTRACT_PATTERN
@@ -35,7 +34,8 @@ module Chatrix
         end
 
         def search(title)
-          response = HTTParty.get ENDPOINT, query: make_search_query title, year
+          response = HTTParty.get ENDPOINT,
+                                  query: make_search_query(title, year)
           response.parsed_response unless response['Response'] == 'False'
         end
 
