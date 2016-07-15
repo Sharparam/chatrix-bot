@@ -22,7 +22,7 @@ module Chatrix
         def movie(room, _sender, _command, args)
           match = args[:title].match EXTRACT_PATTERN
           data = lookup match[1], match[2]
-          data = search(title) unless data
+          data = search(match[1], match[2]) unless data
           room.messaging.send_message data ? format(data) : 'Movie not found!'
         end
 
@@ -33,7 +33,7 @@ module Chatrix
           response.parsed_response unless response['Response'] == 'False'
         end
 
-        def search(title)
+        def search(title, year = nil)
           response = HTTParty.get ENDPOINT,
                                   query: make_search_query(title, year)
           response.parsed_response unless response['Response'] == 'False'
