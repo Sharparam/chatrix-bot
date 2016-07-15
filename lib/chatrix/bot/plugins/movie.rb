@@ -80,11 +80,25 @@ module Chatrix
         end
 
         def format(data)
-          year = Date.parse(data['release_date']).year
-
-          "#{data['original_title']} (#{year}) by #{director(data)}" \
-          " [#{data['runtime']} mins] #{langs(data)}, #{countries(data)}\n" \
+          "#{heading(data)}\n" \
           "Stars: #{stars(data)}\n#{data['overview']}\n#{imdb(data['imdb_id'])}"
+        end
+
+        def heading(data)
+          year = Date.parse(data['release_date']).year
+          strs = []
+          strs << title_line(data)
+          strs << "(#{year}) by #{director(data)} [#{data['runtime']} mins]"
+          strs << "#{langs(data)}, #{countries(data)}"
+          strs.join ' '
+        end
+
+        def title_line(data)
+          title_diff = data['title'] != data['original_title']
+          strs = []
+          strs << data['title']
+          strs << "(#{data['original_title']})" if title_diff
+          strs.join ' '
         end
 
         def langs(data)
