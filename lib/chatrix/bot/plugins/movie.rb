@@ -26,7 +26,6 @@ module Chatrix
           super
 
           @cache = {}
-          @s_cache = {}
 
           unless @config[:tmdb_key]
             @log.error 'TMDb API key must be specified to use the movie plugin'
