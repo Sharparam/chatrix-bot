@@ -65,3 +65,7 @@ Bug reports and pull requests are welcome on [GitHub][issues].
 [issues]: https://github.com/Sharparam/chatrix-bot/issues
 [sharparam]: https://github.com/Sharparam
 [license]: http://opensource.org/licenses/MIT
+
+## Legal stuff
+
+This product uses the TMDb API but is not endorsed or certified by TMDb.

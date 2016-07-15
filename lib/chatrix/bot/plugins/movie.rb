@@ -7,7 +7,7 @@ module Chatrix
     module Plugins
       # Lets users look up information for a movie by its name.
       class Movie < Plugin
-        ENDPOINT = 'https://www.omdbapi.com'
+        ENDPOINT = 'https://api.themoviedb.org/3'
 
         IMDB_TEMPLATE = 'http://www.imdb.com/title/'
 
@@ -17,66 +17,96 @@ module Chatrix
                          ' with the specified title, to get a movie from a' \
                          ' specific year (if there are multiple movies with' \
                          ' the same names), put the year in parentheses after' \
-                         ' the title.', handler: :movie, aliases: %w(imdb omdb)
+                         ' the title. ' \
+                         'This plugin uses the TMDb API but is not endorsed' \
+                         ' or certified by TMDb.',
+                         handler: :movie, aliases: %w(tmdb)
 
         def initialize(bot)
           super
 
           @cache = {}
           @s_cache = {}
+
+          unless @config[:tmdb_key]
+            @log.error 'TMDb API key must be specified to use the movie plugin'
+          end
         end
 
         def movie(room, _sender, _command, args)
+          return unless @config[:tmdb_key]
           match = args[:title].match EXTRACT_PATTERN
           data = lookup match[1], match[2]
-          data = search(match[1], match[2]) unless data
           room.messaging.send_message data ? format(data) : 'Movie not found!'
         end
 
         private
 
+        def api_path(resource)
+          "#{ENDPOINT}#{resource}"
+        end
+
         def lookup(title, year = nil)
           return @cache[[title, year]] if @cache.key? [title, year]
-          response = HTTParty.get ENDPOINT, query: make_query(title, year)
-          data = response.parsed_response
-          return nil if data['Response'] == 'False'
-          @cache[[title, year]] = data
+          @cache[[title, year]] = search(title, year)
+        end
+
+        def get(id)
+          query = { append_to_response: 'credits' }
+          response = request "/movie/#{id}", query
+          response.parsed_response if response.code == 200
         end
 
         def search(title, year = nil)
-          return @s_cache[[title, year]] if @s_cache.key? [title, year]
-          response = HTTParty.get ENDPOINT,
-                                  query: make_search_query(title, year)
-          data = response.parsed_response
-          return nil if data['Response'] == 'False'
-          @s_cache[[title, year]] = data
+          query = { query: title, include_adult: true }
+          query[:year] = year if year
+          response = request '/search/movie', query
+          return nil if response.nil? || response['results'].empty?
+          id = response['results'].first['id']
+          get id
         end
 
-        def make_query(title, year = nil)
-          { t: title, y: year, r: 'json', tomatoes: true, plot: 'short' }
+        def request(resource, query = {})
+          response = HTTParty.get api_path(resource), make_opts(query)
+          response.parsed_response if response.code == 200
         end
 
-        def make_search_query(title, year = nil)
-          { s: title, y: year, r: 'json' }
+        def make_opts(query = {})
+          {
+            query: { api_key: @config[:tmdb_key] }.merge(query),
+            headers: {
+              'User-Agent' => "chatrix-bot/#{Bot::VERSION}",
+              'Accept' => 'application/json'
+            }
+          }
         end
 
         def format(data)
-          data['Search'] ? format_search(data) : format_movie(data)
+          year = Date.parse(data['release_date']).year
+
+          "#{data['original_title']} (#{year}) by #{director(data)}" \
+          " [#{data['runtime']} mins] #{langs(data)}, #{countries(data)}\n" \
+          "Stars: #{stars(data)}\n#{data['overview']}\n#{imdb(data['imdb_id'])}"
         end
 
-        def format_movie(data)
-          "#{data['Title']} (#{data['Year']}) by #{data['Director']}" \
-          " [#{data['Runtime']}] #{data['Language']}, #{data['Country']}\n" \
-          "Stars: #{data['Actors']}\n" \
-          "Plot: #{data['Plot']}\n" \
-          "Ratings: Metascore: #{data['Metascore']}, " \
-          "RT: #{data['tomatoMeter']}%, IMDb: #{data['imdbRating']}\n" \
-          "#{IMDB_TEMPLATE}#{data['imdbID']}"
+        def langs(data)
+          data['spoken_languages'].map { |l| l['name'] }.join ', '
         end
 
-        def format_search(data)
-          list = data['Search'].map { |m| "#{m['Title']} (#{m['Year']})" }
-          "Did you mean? #{list.join(', ')}"
+        def countries(data)
+          data['production_countries'].map { |l| l['iso_3166_1'] }.join ', '
+        end
+
+        def director(data)
+          data['credits']['crew'].find { |c| c['job'] == 'Director' }['name']
+        end
+
+        def stars(data)
+          data['credits']['cast'].first(3).map { |a| a['name'] }.join ', '
+        end
+
+        def imdb(id)
+          "#{IMDB_TEMPLATE}#{id}"
         end
       end
     end
