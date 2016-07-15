@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pstore'
+
 module Chatrix
   class Bot
     module Plugins
@@ -18,7 +20,7 @@ module Chatrix
           @config[:delay] ||= 600
           @config[:threshold] ||= 30
 
-          @db = @config[:db]
+          init_db
 
           @last = Time.now
           @counter = 0
@@ -43,6 +45,10 @@ module Chatrix
 
         private
 
+        def init_db
+          @db = PStore.new File.join(@config.dir, 'db.pstore')
+        end
+
         def process(text)
           text.tr("\n", ' ').split(/[\.!?]/).each do |sentence|
             train(sentence.strip)
@@ -63,22 +69,30 @@ module Chatrix
         end
 
         def add(pair, word)
-          @db[pair] = {} unless @db[pair]
-          @db[pair][word] = { count: 0 } unless @db[pair][word]
-          @db[pair][word][:count] += 1
-          @config.save
+          @db.transaction do
+            @db[pair] = {} unless @db.root? pair
+            @db[pair][word] = { count: 0 } unless @db[pair].key? word
+            @db[pair][word][:count] += 1
+          end
         end
 
         def next_word(pair)
-          return nil unless @db[pair]
-          sum = @db[pair].values.reduce(0) { |a, e| a + e.count }
-          return nil if sum < 1
+          sum = @db.transaction(true) do
+            @db.abort unless @db.root? pair
+            @db[pair].values.reduce(0) { |a, e| a + e.count }
+          end
+
+          return nil if sum.nil? || sum < 1
+
           rng = rand 1..sum
           get_word sorted_words(pair), rng
         end
 
         def sorted_words(pair)
-          arr = @db[pair].map { |w, d| { word: w, count: d[:count] } }
+          arr = @db.transaction(true) do
+            @db[pair].map { |w, d| { word: w, count: d[:count] } }
+          end
+
           arr.sort { |a, b| b[:count] - a[:count] }
         end
 
