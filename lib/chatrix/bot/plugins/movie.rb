@@ -7,7 +7,7 @@ module Chatrix
     module Plugins
       # Lets users look up information for a movie by its name.
       class Movie < Plugin
-        ENDPOINT = 'http://www.omdb.com'.freeze
+        ENDPOINT = 'https://www.omdbapi.com'.freeze
 
         IMDB_TEMPLATE = 'http://www.imdb.com/title/'
 
