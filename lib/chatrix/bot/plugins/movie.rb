@@ -23,6 +23,7 @@ module Chatrix
         def movie(room, _sender, _command, args)
           match = args[:title].match EXTRACT_PATTERN
           data = lookup match[1], match[2]
+          data = search(title) unless data
           room.messaging.send_message data ? format(data) : 'Movie not found!'
         end
 
@@ -33,11 +34,24 @@ module Chatrix
           response.parsed_response unless response['Response'] == 'False'
         end
 
+        def search(title)
+          response = HTTParty.get ENDPOINT, query: make_search_query title, year
+          response.parsed_response unless response['Response'] == 'False'
+        end
+
         def make_query(title, year = nil)
           { t: title, y: year, r: 'json', tomatoes: true, plot: 'short' }
         end
 
+        def make_search_query(title, year = nil)
+          { s: title, y: year, r: 'json' }
+        end
+
         def format(data)
+          data['Search'] ? format_search(data) : format_movie(data)
+        end
+
+        def format_movie(data)
           "#{data['Title']} (#{data['Year']}) by #{data['Director']}" \
           " [#{data['Runtime']}] #{data['Language']}, #{data['Country']}\n" \
           "Stars: #{data['Actors']}\n" \
@@ -45,6 +59,11 @@ module Chatrix
           "Ratings: Metascore: #{data['Metascore']}, " \
           "RT: #{data['tomatoMeter']}%, IMDb: #{data['imdbRating']}\n" \
           "#{IMDB_TEMPLATE}#{data['imdbID']}"
+        end
+
+        def format_search(data)
+          list = data['Search'].map { |m| "#{m['Title']} (#{m['Year']})" }
+          "Did you mean? #{list.join(', ')}"
         end
       end
     end
