@@ -118,7 +118,7 @@ module Chatrix
         end
 
         def imdb(id)
-          "#{IMDB_TEMPLATE}#{id}"
+          "#{IMDB_TEMPLATE}#{id}" if id
         end
       end
     end
