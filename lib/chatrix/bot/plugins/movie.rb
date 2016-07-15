@@ -52,7 +52,7 @@ module Chatrix
         end
 
         def get(id)
-          request "/movie/#{id}", { append_to_response: 'credits' }
+          request "/movie/#{id}", append_to_response: 'credits'
         end
 
         def search(title, year = nil)
