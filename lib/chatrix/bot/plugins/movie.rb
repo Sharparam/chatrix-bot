@@ -19,6 +19,13 @@ module Chatrix
                          ' the same names), put the year in parentheses after' \
                          ' the title.', handler: :movie, aliases: %w(imdb omdb)
 
+        def initialize(bot)
+          super
+
+          @cache = {}
+          @s_cache = {}
+        end
+
         def movie(room, _sender, _command, args)
           match = args[:title].match EXTRACT_PATTERN
           data = lookup match[1], match[2]
@@ -29,14 +36,20 @@ module Chatrix
         private
 
         def lookup(title, year = nil)
+          return @cache[[title, year]] if @cache.key? [title, year]
           response = HTTParty.get ENDPOINT, query: make_query(title, year)
-          response.parsed_response unless response['Response'] == 'False'
+          data = response.parsed_response
+          return nil if data['Response'] == 'False'
+          @cache[[title, year]] = data
         end
 
         def search(title, year = nil)
+          return @s_cache[[title, year]] if @s_cache.key? [title, year]
           response = HTTParty.get ENDPOINT,
                                   query: make_search_query(title, year)
-          response.parsed_response unless response['Response'] == 'False'
+          data = response.parsed_response
+          return nil if data['Response'] == 'False'
+          @s_cache[[title, year]] = data
         end
 
         def make_query(title, year = nil)
