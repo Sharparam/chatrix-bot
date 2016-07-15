@@ -52,9 +52,7 @@ module Chatrix
         end
 
         def get(id)
-          query = { append_to_response: 'credits' }
-          response = request "/movie/#{id}", query
-          response.parsed_response if response.code == 200
+          request "/movie/#{id}", { append_to_response: 'credits' }
         end
 
         def search(title, year = nil)
