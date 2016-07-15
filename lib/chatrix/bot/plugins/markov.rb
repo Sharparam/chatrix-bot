@@ -44,7 +44,7 @@ module Chatrix
         private
 
         def process(text)
-          text.gsub("\n", ' ').split(/[\.!?]/).each do |sentence|
+          text.tr("\n", ' ').split(/[\.!?]/).each do |sentence|
             train(sentence.strip)
           end
         end
@@ -59,7 +59,7 @@ module Chatrix
         end
 
         def extract_words(sentence)
-          sentence.split(' ').map { |w| w.strip }
+          sentence.split.map(&:strip)
         end
 
         def add(pair, word)
