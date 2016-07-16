@@ -7,11 +7,9 @@ module Chatrix
     module Plugins
       # Markov plugin using chat text for data.
       class Markov < Plugin
-        register_command 'markov', '<word1> <word2>', 'Sends a reply built' \
-                         ' from the specified two words (more than two words' \
-                         ' can also be passed, in which a random pair is' \
-                         ' selected from the sentence and used as the seed' \
-                         ' value.', handler: :force
+        register_command 'markov', '[phrase]', 'Sends a reply based on the' \
+                         ' specified phrase (if no phrase is given, a random' \
+                         ' phrase will be constructed).', handler: :force
 
         def initialize(bot)
           super
@@ -39,7 +37,9 @@ module Chatrix
         end
 
         def force(room, _sender, _command, args)
-          reply(room, "#{args[:word1].downcase} #{args[:word2].downcase}")
+          # We do to_s on the parameter since it can be nil, in which case
+          # to_s makes it an empty string and reply will make an empty array.
+          reply(room, args[:phrase].to_s.downcase)
         end
 
         private
@@ -57,10 +57,17 @@ module Chatrix
         def train(sentence)
           return if sentence.empty?
           words = extract_words sentence
-          return if words.size < 3
-          (words.size - 2).times do |i|
-            add words[i..i + 1].join(' '), words[i + 2]
+          return if words.empty?
+          words.size.times do |i|
+            pair = extract_pair words, i
+            add pair, words[i]
           end
+        end
+
+        def extract_pair(words, index)
+          return [nil, nil] if index == 0
+          return [nil, words[index - 1]] if index == 1
+          words[index - 2..index - 1]
         end
 
         def extract_words(sentence)
@@ -69,9 +76,7 @@ module Chatrix
 
         def add(pair, word)
           @db.transaction do
-            @db[pair] = {} unless @db.root? pair
-            @db[pair][word] = { count: 0 } unless @db[pair].key? word
-            @db[pair][word][:count] += 1
+            ((@db[pair] ||= {})[word] ||= { count: 0 })[:count] += 1
           end
         end
 
@@ -109,20 +114,25 @@ module Chatrix
         end
 
         def reply(room, message)
-          words = message.split ' '
-          return unless words.size > 1
+          seed = make_seed message.split(' ')
+          sentence = make_sentence(seed, rand(5..40)).strip
+          sentence = "I can't talk about that :(" if sentence.empty?
+          room.messaging.send_message sentence
+        end
+
+        def make_seed(words)
+          return [nil, nil] if words.empty?
+          return [nil, words.first] if words.size == 1
           rng = rand 0..words.size - 2
-          seed = words[rng..rng + 1]
-          room.messaging.send_message make_sentence(seed, rand(5..40))
+          words[rng..rng + 1]
         end
 
         def make_sentence(seed, length)
-          words = build(seed, length)
-          words.join ' '
+          build(seed, length).join ' '
         end
 
         def build(words, count)
-          to_add = next_word words[-2..-1].join(' ')
+          to_add = next_word extract_pair(words, words.size)
           return words if to_add.nil?
           words << to_add
           count == 0 ? words : build(words, count - 1)
