@@ -16,7 +16,6 @@ module Chatrix
         def initialize(bot)
           super
 
-          @config[:db] ||= {}
           @config[:delay] ||= 600
           @config[:threshold] ||= 30
 
