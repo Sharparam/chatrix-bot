@@ -60,6 +60,10 @@ module Chatrix
         @log.error "Error while parsing message in #{self.class}: #{e.inspect}"
       end
 
+      def save
+        @config.save
+      end
+
       private
 
       def handle_match(room, message, pattern)

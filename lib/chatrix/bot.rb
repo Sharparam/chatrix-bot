@@ -81,6 +81,7 @@ module Chatrix
 
     def on_disconnected
       log.error 'Lost connection with server'
+      @plugin_manager.save_all
       broadcast(:disconnected)
     end
 

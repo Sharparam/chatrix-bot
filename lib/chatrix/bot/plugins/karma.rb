@@ -18,7 +18,7 @@ module Chatrix
 
           @history = {}
 
-          @config.save
+          save
         end
 
         def karma(room, message, match)
@@ -40,7 +40,7 @@ module Chatrix
 
         def []=(user, value)
           @config[:db][user] = value
-          @config.save
+          save
         end
 
         private

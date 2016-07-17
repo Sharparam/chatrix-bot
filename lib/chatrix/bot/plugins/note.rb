@@ -31,13 +31,13 @@ module Chatrix
         def set_note(room, sender, content)
           return clear_note(room, sender) if content == 'clear'
           @config[sender.id] = content.to_s
-          @config.save
+          save
           room.messaging.send_notice "OK! Note set: #{@config[sender.id]}"
         end
 
         def clear_note(room, sender)
           @config[sender.id] = nil
-          @config.save
+          save
           room.messaging.send_notice 'OK! Note cleared.'
         end
       end

@@ -37,7 +37,7 @@ module Chatrix
           @protected.send(@protected.member?(topic) ? :delete : :push, topic)
           kind = @protected.member?(topic) ? 'protected' : 'unprotected'
           room.messaging.send_notice "#{topic} #{kind}!"
-          @config.save
+          save
         end
 
         def tilde(room, message, match)
@@ -65,7 +65,7 @@ module Chatrix
           return notify_protected(room, topic) if @protected.member? topic
           @db[topic].push quote
           room.messaging.send_notice 'Quote added!'
-          @config.save
+          save
         end
 
         def top_topics(amount)

@@ -52,6 +52,10 @@ module Chatrix
         plugins.each { |p| p.parse_message room, message }
       end
 
+      def save_all
+        @plugins.values.each(&:save)
+      end
+
       private
 
       def parse_command(room, message)

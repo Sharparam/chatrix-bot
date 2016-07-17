@@ -18,7 +18,7 @@ module Chatrix
 
           if @config[:api_key].nil?
             @config[:api_key] = '_'
-            @config.save
+            save
             @log.error 'API key must be specified to use YouTube plugin'
           end
 
