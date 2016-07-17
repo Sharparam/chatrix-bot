@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.3.0'
 
-  spec.add_runtime_dependency 'chatrix', '~> 1.1'
+  spec.add_runtime_dependency 'chatrix', '~> 1.4'
   spec.add_runtime_dependency 'redcarpet', '~> 3.3'
   spec.add_runtime_dependency 'wisper', '~> 1.6'
   spec.add_runtime_dependency 'daemons', '~> 1.2'
