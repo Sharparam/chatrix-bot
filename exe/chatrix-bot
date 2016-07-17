@@ -55,11 +55,9 @@ args = ARGV.member?('--') ? ARGV[(ARGV.index('--') + 1)..-1] : ARGV
 
 opt_parser.parse!(args)
 
-Daemons.run_proc('chatrix-bot.rb') do
-  bot = Chatrix::Bot.new options[:config]
+bot = Chatrix::Bot.new options[:config]
+
+Daemons.run_proc('chatrix-bot.rb', stop_proc: proc { bot.stop }) do
   bot.start
-  bot.on(:disconnected) do
-    abort 'Bot disconnected unexpectedly'
-  end
   loop { sleep(5) }
 end

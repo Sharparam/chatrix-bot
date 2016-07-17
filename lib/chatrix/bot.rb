@@ -53,14 +53,14 @@ module Chatrix
     def start
       init_client unless @client
 
-      log.info 'Bot starting to sync'
+      log.info 'Bot starting'
 
       @client.start_syncing
     end
 
     # Stops the bot (stops syncing with the homeserver).
     def stop
-      log.info 'Bot stopping sync'
+      log.info 'Bot stopping'
       @client.stop_syncing
     end
 
