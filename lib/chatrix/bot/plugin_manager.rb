@@ -56,6 +56,13 @@ module Chatrix
         @plugins.values.each(&:save)
       end
 
+      def shutdown
+        save_all
+        @plugins.values.each do |plugin|
+          plugin.shutdown if plugin.respond_to? :shutdown
+        end
+      end
+
       private
 
       def parse_command(room, message)

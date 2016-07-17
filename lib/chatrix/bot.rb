@@ -61,6 +61,7 @@ module Chatrix
     # Stops the bot (stops syncing with the homeserver).
     def stop
       log.info 'Bot stopping'
+      @plugin_manager.shutdown
       @client.stop_syncing
     end
 
