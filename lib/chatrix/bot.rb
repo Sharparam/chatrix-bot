@@ -80,6 +80,10 @@ module Chatrix
       log.error "Chatrix failed to stop cleanly: #{error.inspect}"
     end
 
+    def on_connection_error(error)
+      log.error "Chatrix connection error: #{error.inspect}"
+    end
+
     def on_disconnected
       log.error 'Lost connection with server'
       @plugin_manager.save_all
