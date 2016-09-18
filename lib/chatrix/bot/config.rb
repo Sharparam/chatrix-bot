@@ -46,6 +46,10 @@ module Chatrix
         @data[key] = value
       end
 
+      def key?(key)
+        @data.key? key
+      end
+
       def get(key, default)
         self[key] = default if self[key].nil?
         self[key]

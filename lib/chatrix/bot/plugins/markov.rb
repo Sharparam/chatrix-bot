@@ -16,6 +16,7 @@ module Chatrix
 
           @config[:delay] ||= 600
           @config[:threshold] ||= 30
+          @config[:reply] = true unless @config.key? :reply
 
           @gen = Generator.new File.join(@config.dir, 'markov.db')
 
@@ -27,6 +28,9 @@ module Chatrix
 
         def on_message(room, message)
           @gen.process message.body.downcase
+
+          return unless @config[:reply]
+
           @counter += 1
 
           return unless can_reply? message
