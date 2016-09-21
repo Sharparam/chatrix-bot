@@ -17,6 +17,14 @@ module Chatrix
             @insert = @data.prepare(:insert, :insert_data,
                                     first: :$f, second: :$s, word: :$w)
 
+            @update_start = @data.where(first: nil, second: nil, word: :$w)
+                                 .prepare(:update, :update_start,
+                                          count: Sequel.+(:count, 1))
+
+            @update_lead = @data.where(first: nil, second: :$s, word: :$w)
+                                 .prepare(:update, :update_lead,
+                                          count: Sequel.+(:count, 1))
+
             @update = @data.where(first: :$f, second: :$s, word: :$w)
                            .prepare(:update, :update_data,
                                     count: Sequel.+(:count, 1))
@@ -24,7 +32,13 @@ module Chatrix
 
           def add(pair, word)
             # First try to update an existing entry
-            rows = @update.call(f: pair.first, s: pair.last, w: word)
+            if pair.last.nil?
+              rows = @update_start.call(w: word)
+            elsif pair.first.nil?
+              rows = @update_lead.call(s: pair.last, w: word)
+            else
+              rows = @update.call(f: pair.first, s: pair.last, w: word)
+            end
 
             return if rows > 0
 
