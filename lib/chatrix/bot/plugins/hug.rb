@@ -38,6 +38,7 @@ module Chatrix
 
         def filter(room, message, _match)
           sender = message.sender
+          return if @config[:filter][sender.id]
           @config[:filter][sender.id] = true
           room.messaging.send_message(
             "I'm sorry you feel that way, #{sender.displayname}. :("
