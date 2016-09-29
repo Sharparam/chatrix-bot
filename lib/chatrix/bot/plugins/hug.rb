@@ -20,7 +20,13 @@ module Chatrix
           )[\!\.]*
           \z/ix, :filter)
 
-        register_pattern(/\Ai\s+need\s+(?:a\s+)?hugs?[\!\.]*\z/ix, :reset)
+        register_pattern(/
+          \A
+          i\s+
+          (?:need|want|like|love)
+          \s+(?:a\s+)?hugs?[\!\.]*\z
+          /ix,
+          :reset)
 
         def initialize(bot)
           super
