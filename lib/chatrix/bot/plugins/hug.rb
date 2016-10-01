@@ -25,8 +25,7 @@ module Chatrix
           i\s+
           (?:need|want|like|love)
           \s+(?:a\s+)?hugs?[\!\.]*\z
-          /ix,
-          :reset)
+          /ix, :reset)
 
         def initialize(bot)
           super
@@ -46,6 +45,7 @@ module Chatrix
           sender = message.sender
           return if @config[:filter][sender.id]
           @config[:filter][sender.id] = true
+          save
           room.messaging.send_message(
             "I'm sorry you feel that way, #{sender.displayname}. :("
           )
@@ -54,6 +54,7 @@ module Chatrix
         def reset(room, message, _match)
           sender = message.sender
           @config[:filter][sender.id] = false
+          save
           hug room, message, nil
         end
       end
