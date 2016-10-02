@@ -82,6 +82,9 @@ module Chatrix
 
     def on_connection_error(error)
       log.error "Chatrix connection error: #{error.inspect}"
+      log.info 'Attempting to reconnect'
+      @client.stop_syncing
+      @client.start_syncing
     end
 
     def on_disconnected
